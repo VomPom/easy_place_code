@@ -1,16 +1,8 @@
 # easy_place_code
 
-A new Flutter project.
+场所码小助手，帮助你记录此前扫过的场所码，快捷打开场所码界面（目前仅支持打开支付宝）。
 
-## Getting Started
+## 使用
+点击主页上方“扫场所码”会自动扫描对应的场所码，会自动识别二维码的内容，将识别的二维码结果带入支付宝，并将该次扫码的结果进行保存，下一次使用的时候只需要点击列表中的按钮即可实现“一键出场所码结果”，告别重复扫描。
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
