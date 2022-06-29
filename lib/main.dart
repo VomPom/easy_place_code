@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easy_permission/constants.dart';
 import 'package:flutter_easy_permission/easy_permissions.dart';
 import 'package:flutter_scankit/flutter_scankit.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'components/place_item.dart';
@@ -117,14 +117,15 @@ class HomeState extends State<Home> {
             children: [
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: 100,
+                height: 160,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: const BoxDecoration(color: Colors.blue),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    ElevatedButton(
-                      child: const Text("扫场所码"),
-                      onPressed: () async {
+                    GestureDetector(
+                      onTap: () async {
                         isCustom = false;
                         if (!await FlutterEasyPermission.has(
                             perms: _permissions,
@@ -136,13 +137,25 @@ class HomeState extends State<Home> {
                           startScan();
                         }
                       },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            "lib/assets/scan.svg",
+                            color: Colors.white,
+                            height: 48,
+                            width: 48,
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            '扫一扫',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          )
+                        ],
+                      ),
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      child: const Text("健康码(随申码)"),
-                      onPressed: () async {
+                    GestureDetector(
+                      onTap: () async {
                         isCustom = true;
                         if (!await FlutterEasyPermission.has(
                             perms: _permissions,
@@ -155,32 +168,82 @@ class HomeState extends State<Home> {
                               'http://qrcode.sh.gov.cn/enterprise/scene');
                         }
                       },
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                        child: const Text("存数据"),
-                        onPressed: () async {
-                          QRCode qrCode = QRCode(
-                              id: DateTime.now().hashCode,
-                              description: "汤臣",
-                              qrCodeResult: "qrcode",
-                              createdTime: DateTime.now());
-                          QrCodeDatabase.instance.create(qrCode);
-                          QrCodeDatabase.instance
-                              .readAllQRCode()
-                              .then((value) => value.forEach((element) {
-                                    print(
-                                        '--julis  QrCodeDatabase.instance.readAllQRCode():${element.toJson()}');
-                                  }));
-                        })
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            "lib/assets/health.svg",
+                            color: Colors.white,
+                            height: 48,
+                            width: 48,
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            '健康码',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          )
+                        ],
+                      ),
+                    )
+                    // ElevatedButton(
+                    //   child: const Text("扫场所码"),
+                    //   onPressed: () async {
+                    //     isCustom = false;
+                    //     if (!await FlutterEasyPermission.has(
+                    //         perms: _permissions,
+                    //         permsGroup: _permissionGroup)) {
+                    //       FlutterEasyPermission.request(
+                    //           perms: _permissions,
+                    //           permsGroup: _permissionGroup);
+                    //     } else {
+                    //       startScan();
+                    //     }
+                    //   },
+                    // ),
+                    // const SizedBox(
+                    //   width: 20,
+                    // ),
+                    // ElevatedButton(
+                    //   child: const Text("健康码(随申码)"),
+                    //   onPressed: () async {
+                    //     isCustom = true;
+                    //     if (!await FlutterEasyPermission.has(
+                    //         perms: _permissions,
+                    //         permsGroup: _permissionGroup)) {
+                    //       FlutterEasyPermission.request(
+                    //           perms: _permissions,
+                    //           permsGroup: _permissionGroup);
+                    //     } else {
+                    //       _openAliPay(
+                    //           'http://qrcode.sh.gov.cn/enterprise/scene');
+                    //     }
+                    //   },
+                    // ),
+                    // const SizedBox(
+                    //   width: 20,
+                    // ),
+                    // ElevatedButton(
+                    //     child: const Text("存数据"),
+                    //     onPressed: () async {
+                    //       QRCode qrCode = QRCode(
+                    //           id: DateTime.now().hashCode,
+                    //           description: "汤臣",
+                    //           qrCodeResult: "qrcode",
+                    //           createdTime: DateTime.now());
+                    //       QrCodeDatabase.instance.create(qrCode);
+                    //       QrCodeDatabase.instance
+                    //           .readAllQRCode()
+                    //           .then((value) => value.forEach((element) {
+                    //                 print(
+                    //                     '--julis  QrCodeDatabase.instance.readAllQRCode():${element.toJson()}');
+                    //               }));
+                    //     })
                   ],
                 ),
               ),
               Container(
                   height: double.infinity,
-                  margin: const EdgeInsets.only(top: 100),
+                  margin: const EdgeInsets.only(top: 160),
                   padding: const EdgeInsets.only(top: 8),
                   decoration: const BoxDecoration(
                     color: Colors.white,

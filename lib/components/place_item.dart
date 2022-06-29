@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:easy_place_code/model/qr_code.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,10 +19,10 @@ class PlaceItem extends StatefulWidget {
 }
 
 class _PlaceItemState extends State<PlaceItem> {
+  bool isEdit = false;
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 60,
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       decoration: widget.index == 0
           ? const BoxDecoration(
@@ -32,6 +34,10 @@ class _PlaceItemState extends State<PlaceItem> {
       child: InkWell(
           onTap: () {
             _openAliPay('http://qrcode.sh.gov.cn/enterprise/scene');
+          },
+          onLongPress: () {
+            isEdit = true;
+            setState(() {});
           },
           child: Column(
             children: [
@@ -46,12 +52,24 @@ class _PlaceItemState extends State<PlaceItem> {
                       ),
                     ),
                     Container(width: 8),
-                    Text(
-                      widget.data.description,
-                      style: const TextStyle(
-                        fontSize: 16,
+                    if (isEdit)
+                      Expanded(
+                          child: TextField(
+                        decoration: InputDecoration(
+                          labelText: '请输入场所码位置',
+                        ),
+                        onSubmitted: (val) {
+                          isEdit = false;
+                          setState(() {});
+                        },
+                      ))
+                    else
+                      Text(
+                        widget.data.description,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),

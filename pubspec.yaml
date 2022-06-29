@@ -49,6 +49,7 @@ dev_dependencies:
   flutter_scankit: ^1.2.4
   flutter_easy_permission: ^1.1.2
   sqflite: ^2.0.2+1
+  flutter_svg: ^1.1.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -91,3 +92,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  assets:
+    - lib/assets/
