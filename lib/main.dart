@@ -52,16 +52,10 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
-    // todo
-    items = [
-      {'title': '汤臣'},
-      {'title': '汤臣'},
-      {'title': '汤臣'},
-      {'title': '汤臣'}
-    ];
+    initLocalData();
     scanKit = FlutterScankit();
     scanKit.addResultListen((val) {
-      print("scanning result:$val");
+      debugPrint("scanning result:$val");
       _insertScanData(val);
       _openAliPay(Uri.encodeComponent(val));
       setState(() {
@@ -206,5 +200,9 @@ class HomeState extends State<Home> {
             ],
           )),
     );
+  }
+
+  void initLocalData() async {
+    items = await QrCodeDatabase.instance.readAllQRCode();
   }
 }

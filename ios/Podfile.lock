@@ -9,7 +9,13 @@ PODS:
   - flutter_scankit (0.0.1):
     - Flutter
     - ScanKitFrameWork (~> 1.0.2.300)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - ScanKitFrameWork (1.0.2.300)
+  - sqflite (0.0.2):
+    - Flutter
+    - FMDB (>= 2.7.5)
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -19,11 +25,13 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_easy_permission (from `.symlinks/plugins/flutter_easy_permission/ios`)
   - flutter_scankit (from `.symlinks/plugins/flutter_scankit/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
     - EasyPermissionX
+    - FMDB
     - ScanKitFrameWork
 
 EXTERNAL SOURCES:
@@ -33,6 +41,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_easy_permission/ios"
   flutter_scankit:
     :path: ".symlinks/plugins/flutter_scankit/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
@@ -41,7 +51,9 @@ SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_easy_permission: c67b480f134ff748c069cac2d645f873de2b7880
   flutter_scankit: 16936d86b3de3f83c122e763f4c24c5da214c78f
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   ScanKitFrameWork: 0ad578f3db0ef9b64dd0f533d10d10a52ce93c80
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
 
 PODFILE CHECKSUM: 0fc078e5fad5a454ed951b04c51c191ca09fb548
