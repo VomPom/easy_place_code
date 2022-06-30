@@ -3,6 +3,11 @@ import 'dart:ffi';
 import 'package:easy_place_code/model/qr_code.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'package:oktoast/oktoast.dart';
+
+import '../data_helper.dart';
+import '../utils/notify_modal.dart';
 
 class PlaceItem extends StatefulWidget {
   const PlaceItem({
@@ -19,9 +24,55 @@ class PlaceItem extends StatefulWidget {
 }
 
 class _PlaceItemState extends State<PlaceItem> {
+  final TextEditingController _controller = TextEditingController();
   bool isEdit = false;
   @override
+  void initState() {
+    _controller.text = widget.data.description;
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Slidable(
+          key: Key(widget.data.id.toString()),
+           endActionPane: ActionPane(
+              motion: const StretchMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: (context) {
+                    isEdit = true;
+                    setState(() {});
+                  },
+                  backgroundColor: Color(0xFF7BC043),
+                  foregroundColor: Colors.white,
+                  // icon: Icons.edit,
+                  label: '编辑',
+                ),
+                SlidableAction(
+                  onPressed: (context) async {
+                    await QrCodeDatabase.instance.delete(widget.data.id!);
+                    CustomNotification("reload").dispatch(context);
+                  },
+                  backgroundColor: const Color.fromARGB(255, 231, 76, 65),
+                  foregroundColor: Colors.white,
+                  // icon: Icons.delete,
+                  label: '删除',
+                ),
+              ],
+            ),
+          child: _buildBody(),
+        ),
+        const Divider(
+          color: Color.fromARGB(255, 233, 227, 227),
+          height: 0.5,
+        )
+      ],
+    );
+  }
+
+  Widget _buildBody() {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       decoration: widget.index == 0
@@ -32,53 +83,51 @@ class _PlaceItemState extends State<PlaceItem> {
             )
           : null,
       child: InkWell(
-          onTap: () {
-            _openAliPay('http://qrcode.sh.gov.cn/enterprise/scene');
-          },
-          onLongPress: () {
-            isEdit = true;
-            setState(() {});
-          },
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
-                child: Row(
-                  children: [
+        onTap: () {
+          _openAliPay('http://qrcode.sh.gov.cn/enterprise/scene');
+        },
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+              child: Row(
+                children: [
+                  Text(
+                    (widget.index + 1).toString(),
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  Container(width: 8),
+                  if (isEdit)
+                    Expanded(
+                      child: TextField(
+                        controller: _controller,
+                        decoration: null,
+                        autofocus: true,
+                        onSubmitted: (val) async {
+                          print(_controller.text);
+                          // todo 存数据库
+                          await QrCodeDatabase.instance.update(widget.data.copy(description: _controller.text));
+                          // _controller.text = '';
+                          CustomNotification("reload").dispatch(context);
+                          isEdit = false;
+                          // setState(() {});
+                        },
+                      )
+                    )
+                  else
                     Text(
-                      (widget.index + 1).toString(),
+                      widget.data.description,
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 16,
                       ),
                     ),
-                    Container(width: 8),
-                    if (isEdit)
-                      Expanded(
-                          child: TextField(
-                        decoration: InputDecoration(
-                          labelText: '请输入场所码位置',
-                        ),
-                        onSubmitted: (val) {
-                          isEdit = false;
-                          setState(() {});
-                        },
-                      ))
-                    else
-                      Text(
-                        widget.data.description,
-                        style: const TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                  ],
-                ),
+                ],
               ),
-              const Divider(
-                color: Color.fromARGB(255, 233, 227, 227),
-                height: 0.5,
-              )
-            ],
-          )),
+            ),
+          ],
+        )),
     );
   }
 
