@@ -31,37 +31,38 @@ class _PlaceItemState extends State<PlaceItem> {
     _controller.text = widget.data.description;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Slidable(
           key: Key(widget.data.id.toString()),
-           endActionPane: ActionPane(
-              motion: const StretchMotion(),
-              children: [
-                SlidableAction(
-                  onPressed: (context) {
-                    isEdit = true;
-                    setState(() {});
-                  },
-                  backgroundColor: Color(0xFF7BC043),
-                  foregroundColor: Colors.white,
-                  // icon: Icons.edit,
-                  label: '编辑',
-                ),
-                SlidableAction(
-                  onPressed: (context) async {
-                    await QrCodeDatabase.instance.delete(widget.data.id!);
-                    CustomNotification("reload").dispatch(context);
-                  },
-                  backgroundColor: const Color.fromARGB(255, 231, 76, 65),
-                  foregroundColor: Colors.white,
-                  // icon: Icons.delete,
-                  label: '删除',
-                ),
-              ],
-            ),
+          endActionPane: ActionPane(
+            motion: const StretchMotion(),
+            children: [
+              SlidableAction(
+                onPressed: (context) {
+                  isEdit = true;
+                  setState(() {});
+                },
+                backgroundColor: Color(0xFF7BC043),
+                foregroundColor: Colors.white,
+                // icon: Icons.edit,
+                label: '编辑',
+              ),
+              SlidableAction(
+                onPressed: (context) async {
+                  await QrCodeDatabase.instance.delete(widget.data.id!);
+                  CustomNotification("reload").dispatch(context);
+                },
+                backgroundColor: const Color.fromARGB(255, 231, 76, 65),
+                foregroundColor: Colors.white,
+                // icon: Icons.delete,
+                label: '删除',
+              ),
+            ],
+          ),
           child: _buildBody(),
         ),
         const Divider(
@@ -83,51 +84,51 @@ class _PlaceItemState extends State<PlaceItem> {
             )
           : null,
       child: InkWell(
-        onTap: () {
-          _openAliPay('http://qrcode.sh.gov.cn/enterprise/scene');
-        },
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-              child: Row(
-                children: [
-                  Text(
-                    (widget.index + 1).toString(),
-                    style: const TextStyle(
-                      fontSize: 20,
+          onTap: () {
+            _openAliPay(Uri.encodeComponent(widget.data.qrCodeResult));
+          },
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+                child: Row(
+                  children: [
+                    Text(
+                      (widget.index + 1).toString(),
+                      style: const TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
-                  ),
-                  Container(width: 8),
-                  if (isEdit)
-                    Expanded(
-                      child: TextField(
+                    Container(width: 8),
+                    if (isEdit)
+                      Expanded(
+                          child: TextField(
                         controller: _controller,
                         decoration: null,
                         autofocus: true,
                         onSubmitted: (val) async {
                           print(_controller.text);
                           // todo 存数据库
-                          await QrCodeDatabase.instance.update(widget.data.copy(description: _controller.text));
+                          await QrCodeDatabase.instance.update(
+                              widget.data.copy(description: _controller.text));
                           // _controller.text = '';
                           CustomNotification("reload").dispatch(context);
                           isEdit = false;
                           // setState(() {});
                         },
-                      )
-                    )
-                  else
-                    Text(
-                      widget.data.description,
-                      style: const TextStyle(
-                        fontSize: 16,
+                      ))
+                    else
+                      Text(
+                        widget.data.description,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        )),
+            ],
+          )),
     );
   }
 
@@ -135,6 +136,7 @@ class _PlaceItemState extends State<PlaceItem> {
     String urlStr =
         'alipayqr://platformapi/startapp?saId=10000007&qrcode=$qrResult';
     debugPrint('urlStr:$urlStr');
+    print('julis urlStr:$urlStr');
     Uri url = Uri.parse(urlStr);
     if (!await launchUrl(url)) throw 'Could not launch $url';
   }

@@ -83,7 +83,7 @@ class HomeState extends State<Home> {
         qrCodeResult: scanData,
         createdTime: DateTime.now());
     QrCodeDatabase.instance.create(qrCode);
-    print('--julis insert success');
+    print('--julis insert success:$scanData');
   }
 
   void _openAliPay(String qrResult) async {
@@ -128,11 +128,9 @@ class HomeState extends State<Home> {
                   onTap: () async {
                     isCustom = false;
                     if (!await FlutterEasyPermission.has(
-                        perms: _permissions,
-                        permsGroup: _permissionGroup)) {
+                        perms: _permissions, permsGroup: _permissionGroup)) {
                       FlutterEasyPermission.request(
-                          perms: _permissions,
-                          permsGroup: _permissionGroup);
+                          perms: _permissions, permsGroup: _permissionGroup);
                     } else {
                       startScan();
                     }
@@ -158,14 +156,11 @@ class HomeState extends State<Home> {
                   onTap: () async {
                     isCustom = true;
                     if (!await FlutterEasyPermission.has(
-                        perms: _permissions,
-                        permsGroup: _permissionGroup)) {
+                        perms: _permissions, permsGroup: _permissionGroup)) {
                       FlutterEasyPermission.request(
-                          perms: _permissions,
-                          permsGroup: _permissionGroup);
+                          perms: _permissions, permsGroup: _permissionGroup);
                     } else {
-                      _openAliPay(
-                          'http://qrcode.sh.gov.cn/enterprise/scene');
+                      _openAliPay('http://qrcode.sh.gov.cn/enterprise/scene');
                     }
                   },
                   child: Column(
@@ -189,12 +184,11 @@ class HomeState extends State<Home> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, i)  {
-              return PlaceItem(data: items[i], index: i);
-            })
-          )
+              child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, i) {
+                    return PlaceItem(data: items[i], index: i);
+                  }))
         ],
       ),
     );
@@ -203,7 +197,7 @@ class HomeState extends State<Home> {
   void initLocalData() async {
     items = await QrCodeDatabase.instance.readAllQRCode();
     setState(() {});
-    items.forEach((element) =>
-    print('julis ${(element as QRCode).description}'));
+    items.forEach(
+        (element) => print('julis ${(element as QRCode).description}'));
   }
 }
