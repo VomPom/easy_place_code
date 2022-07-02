@@ -107,14 +107,10 @@ class _PlaceItemState extends State<PlaceItem> {
                         decoration: null,
                         autofocus: true,
                         onSubmitted: (val) async {
-                          print(_controller.text);
-                          // todo 存数据库
                           await QrCodeDatabase.instance.update(
                               widget.data.copy(description: _controller.text));
-                          // _controller.text = '';
                           CustomNotification("reload").dispatch(context);
                           isEdit = false;
-                          // setState(() {});
                         },
                       ))
                     else
@@ -135,8 +131,6 @@ class _PlaceItemState extends State<PlaceItem> {
   void _openAliPay(String qrResult) async {
     String urlStr =
         'alipayqr://platformapi/startapp?saId=10000007&qrcode=$qrResult';
-    debugPrint('urlStr:$urlStr');
-    print('julis urlStr:$urlStr');
     Uri url = Uri.parse(urlStr);
     if (!await launchUrl(url)) throw 'Could not launch $url';
   }

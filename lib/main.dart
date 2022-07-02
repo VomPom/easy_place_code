@@ -57,10 +57,10 @@ class HomeState extends State<Home> {
     scanKit.addResultListen((val) {
       debugPrint("scanning result:$val");
       _insertScanData(val);
-      _openAliPay(Uri.encodeComponent(val));
       setState(() {
         code = val;
       });
+      _openAliPay(Uri.encodeComponent(val));
     });
 
     FlutterEasyPermission().addPermissionCallback(
@@ -79,7 +79,7 @@ class HomeState extends State<Home> {
     }
     QRCode qrCode = QRCode(
         id: id,
-        description: "汤臣",
+        description: "新的场所码",
         qrCodeResult: scanData,
         createdTime: DateTime.now());
     QrCodeDatabase.instance.create(qrCode);
