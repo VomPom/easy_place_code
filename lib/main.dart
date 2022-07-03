@@ -11,8 +11,10 @@ import 'package:flutter_easy_permission/easy_permissions.dart';
 import 'package:flutter_scankit/flutter_scankit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 import 'components/place_item.dart';
+import 'components/tips_dialog.dart';
 
 void main() {
   runApp(const PlaceCodeHelper());
@@ -26,7 +28,8 @@ class PlaceCodeHelper extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-            title: const Text('场所码助手'),
+            title: const Text('场所码小助手'),
+            actions: [TipsDialog()],
           ),
           body: const Home()),
     );
@@ -48,7 +51,13 @@ class HomeState extends State<Home> {
   late bool isCustom;
   late FlutterScankit scanKit;
   List items = [];
-  String code = "";
+  dynamic _context = null;
+  final TextEditingController _textController = TextEditingController();
+  QRCode curQrCode = QRCode(
+      id: 0,
+      description: "新的场所码",
+      qrCodeResult: '',
+      createdTime: DateTime.now());
 
   @override
   void initState() {
@@ -57,9 +66,6 @@ class HomeState extends State<Home> {
     scanKit.addResultListen((val) {
       debugPrint("scanning result:$val");
       _insertScanData(val);
-      setState(() {
-        code = val;
-      });
       _openAliPay(Uri.encodeComponent(val));
     });
 
@@ -75,15 +81,21 @@ class HomeState extends State<Home> {
     int id = scanData.hashCode;
     QRCode? readData = await QrCodeDatabase.instance.readQRCode(id);
     if (readData != null) {
+      print('object scanData:$scanData readData.dest:${readData.qrCodeResult}');
       return;
     }
+
     QRCode qrCode = QRCode(
         id: id,
         description: "新的场所码",
         qrCodeResult: scanData,
         createdTime: DateTime.now());
+    curQrCode = qrCode;
+
     QrCodeDatabase.instance.create(qrCode);
     print('--julis insert success:$scanData');
+    initLocalData();
+    _showCustomDialog(_context);
   }
 
   void _openAliPay(String qrResult) async {
@@ -108,6 +120,7 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return NotificationListener<CustomNotification>(
       onNotification: (val) {
         initLocalData();
@@ -198,6 +211,57 @@ class HomeState extends State<Home> {
     items = await QrCodeDatabase.instance.readAllQRCode();
     setState(() {});
     items.forEach(
-        (element) => print('julis ${(element as QRCode).description}'));
+        (element) => {print('julis ${(element as QRCode).description}')});
+  }
+
+  void _showCustomDialog(context) {
+    AwesomeDialog(
+        context: context,
+        dialogType: DialogType.INFO,
+        borderSide: const BorderSide(
+          color: Color.fromARGB(255, 76, 140, 175),
+          width: 1,
+        ),
+        width: 380,
+        buttonsBorderRadius: const BorderRadius.all(
+          Radius.circular(2),
+        ),
+        btnCancelText: '取消',
+        btnOkColor: Colors.blue,
+        btnOkText: '确认',
+        btnCancelColor: const Color.fromARGB(255, 222, 226, 230),
+        headerAnimationLoop: false,
+        animType: AnimType.BOTTOMSLIDE,
+        // title: '提示',
+        // desc: '一个1级bug向你发起挑衅，是否迎战？',
+        showCloseIcon: true,
+        btnCancelOnPress: () {},
+        btnOkOnPress: () async {
+          await QrCodeDatabase.instance
+              .update(curQrCode.copy(description: _textController.text));
+          initLocalData();
+        },
+        body: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '说的就是时间发货看对方国家的法规和深刻的个黄金分割复古杨贵妃i一个vu时光如',
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                TextField(
+                  autofocus: true,
+                  controller: _textController,
+                  decoration: InputDecoration(
+                      hintText: '请输入场所码位置标记',
+                      hintStyle: TextStyle(color: Colors.grey)),
+                )
+              ]),
+        )).show();
   }
 }
